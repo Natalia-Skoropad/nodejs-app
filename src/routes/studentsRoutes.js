@@ -10,6 +10,7 @@ import {
 } from '../controllers/studentsController.js';
 
 import {
+  getStudentsSchema,
   createStudentSchema,
   studentIdParamSchema,
   updateStudentSchema,
@@ -21,7 +22,7 @@ const router = Router();
 
 //=================================================================
 
-router.get('/students', getStudents);
+router.get('/students', celebrate(getStudentsSchema), getStudents);
 
 router.get(
   '/students/:studentId',

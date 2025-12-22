@@ -14,8 +14,10 @@ export const getStudents = async (req, res) => {
     sortOrder = 'asc',
   } = req.query;
 
-  const skip = (page - 1) * perPage;
-  const studentsQuery = Student.find();
+  const pageNum = Number(page);
+  const perPageNum = Number(perPage);
+  const skip = (pageNum - 1) * perPageNum;
+  const studentsQuery = Student.find().skip(skip).limit(perPageNum).lean();
 
   if (search) {
     studentsQuery.where({ $text: { $search: search } });
@@ -31,15 +33,16 @@ export const getStudents = async (req, res) => {
     studentsQuery.clone().countDocuments(),
     studentsQuery
       .skip(skip)
-      .limit(perPage)
-      .sort({ [sortBy]: sortOrder }),
+      .limit(perPageNum)
+      .sort({ [sortBy]: sortOrder })
+      .lean(),
   ]);
 
-  const totalPages = Math.ceil(totalItems / perPage);
+  const totalPages = Math.ceil(totalItems / perPageNum);
 
   res.status(200).json({
-    page,
-    perPage,
+    page: pageNum,
+    perPage: perPageNum,
     totalItems,
     totalPages,
     students,

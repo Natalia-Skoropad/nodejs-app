@@ -10,11 +10,13 @@ import {
 } from '../controllers/studentsController.js';
 
 import {
-  getStudentsSchema,
   createStudentSchema,
+  getStudentsSchema,
   studentIdParamSchema,
   updateStudentSchema,
 } from '../validations/studentsValidation.js';
+
+import { authenticate } from '../middleware/authenticate.js';
 
 //=================================================================
 
@@ -22,6 +24,7 @@ const router = Router();
 
 //=================================================================
 
+router.use('/students', authenticate);
 router.get('/students', celebrate(getStudentsSchema), getStudents);
 
 router.get(
